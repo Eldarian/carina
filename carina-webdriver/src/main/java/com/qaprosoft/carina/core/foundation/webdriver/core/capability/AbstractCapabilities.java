@@ -74,10 +74,13 @@ public abstract class AbstractCapabilities {
                 String value = R.CONFIG.get(entry.getKey());                
                 if (!value.isEmpty()) {
                     String cap = entry.getKey().replaceAll(prefix, "");
-                    if (isNumber(value)) {
-                        LOGGER.debug("Adding " + entry + " to capabilities as integer");
+                    //TODO: #1463 find a way to analyze capability value and set it as integer for all numbers
+                    if ("idleTimeout".equalsIgnoreCase(cap)) {
                         capabilities.setCapability(cap, Integer.parseInt(value));
-                    } else if ("false".equalsIgnoreCase(value)) {
+                        continue;
+                    }
+                    
+                    if ("false".equalsIgnoreCase(value)) {
                         capabilities.setCapability(cap, false);
                     } else if ("true".equalsIgnoreCase(value)) {
                         capabilities.setCapability(cap, true);
@@ -300,20 +303,6 @@ public abstract class AbstractCapabilities {
         }
 
         return caps;
-    }
-
-    private boolean isNumber(String value){
-        if (value == null || value.isEmpty()){
-            return false;
-        }
-
-        try {
-            Integer.parseInt(value);
-        } catch (NumberFormatException ex){
-            return false;
-        }
-
-        return true;
     }
 
     /**
